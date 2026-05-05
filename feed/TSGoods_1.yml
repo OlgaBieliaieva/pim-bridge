@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE yml_catalog SYSTEM "shops.dtd" >
+<yml_catalog date="2026-05-05 09:58">
+  <shop>
+    <currencies>
+      <currency id="UAH" />
+    </currencies>
+    <categories>
+      <category id="1">Одяг</category>
+      <category id="2" parentId="1">Джемпер</category>
+      <category id="3" parentId="1">Джинси</category>
+      <category id="4" parentId="1">Пальто</category>
+      <category id="5" parentId="1">Сукня</category>
+      <category id="6" parentId="1">Шарф</category>
+    </categories>
+    <offers>
+      <offer id="1" type="vendor.model">
+        <available>true</available>
+        <currencyId>UAH</currencyId>
+        <categoryId>2</categoryId>
+        <picture>1.jpg</picture>
+      </offer>
+      <offer id="2" type="vendor.model">
+        <available>true</available>
+        <currencyId>UAH</currencyId>
+        <categoryId>2</categoryId>
+        <picture>2.jpg</picture>
+      </offer>
+      <offer id="3" type="vendor.model">
+        <available>true</available>
+        <currencyId>UAH</currencyId>
+        <categoryId>2</categoryId>
+        <picture>3.jpg</picture>
+      </offer>
+      <offer id="4" type="vendor.model">
+        <available>true</available>
+        <currencyId>UAH</currencyId>
+        <categoryId>2</categoryId>
+        <picture>4.jpg</picture>
+      </offer>
+      <offer id="5" type="vendor.model">
+        <available>true</available>
+        <currencyId>UAH</currencyId>
+        <categoryId>2</categoryId>
+        <picture>5.jpg</picture>
+      </offer>
+      <offer id="13" type="vendor.model">
+        <available>true</available>
+        <currencyId>UAH</currencyId>
+        <categoryId>3</categoryId>
+        <picture>13.jpg</picture>
+      </offer>
+      <offer id="14" type="vendor.model">
+        <available>true</available>
+        <currencyId>UAH</currencyId>
+        <categoryId>3</categoryId>
+        <picture>14.jpg</picture>
+      </offer>
+      <offer id="15" type="vendor.model">
+        <available>true</available>
+        <currencyId>UAH</currencyId>
+        <categoryId>3</categoryId>
+        <picture>15.jpg</picture>
+      </offer>
+      <offer id="16" type="vendor.model">
+        <available>true</available>
+        <currencyId>UAH</currencyId>
+        <categoryId>3</categoryId>
+        <picture>16.jpg</picture>
+      </offer>
+      <offer id="17" type="vendor.model">
+        <available>true</available>
+        <currencyId>UAH</currencyId>
+        <categoryId>3</categoryId>
+        <picture>17.jpg</picture>
+      </offer>
+      <offer id="6" type="vendor.model">
+        <available>true</available>
+        <currencyId>UAH</currencyId>
+        <categoryId>3</categoryId>
+        <picture>6.jpg</picture>
+      </offer>
+      <offer id="7" type="vendor.model">
+        <available>true</available>
+        <currencyId>UAH</currencyId>
+        <categoryId>3</categoryId>
+        <picture>7.jpg</picture>
+      </offer>
+      <offer id="8" type="vendor.model">
+        <available>true</available>
+        <currencyId>UAH</currencyId>
+        <categoryId>3</categoryId>
+        <picture>8.jpg</picture>
+      </offer>
+      <offer id="9" type="vendor.model">
+        <available>true</available>
+        <currencyId>UAH</currencyId>
+        <categoryId>3</categoryId>
+        <picture>9.jpg</picture>
+      </offer>
+      <offer id="10" type="vendor.model">
+        <available>true</available>
+        <currencyId>UAH</currencyId>
+        <categoryId>3</categoryId>
+        <picture>10.jpg</picture>
+      </offer>
+      <offer id="11" type="vendor.model">
+        <available>true</available>
+        <currencyId>UAH</currencyId>
+        <categoryId>3</categoryId>
+        <picture>11.jpg</picture>
+      </offer>
+      <offer id="12" type="vendor.model">
+        <available>true</available>
+        <currencyId>UAH</currencyId>
+        <categoryId>3</categoryId>
+        <picture>12.jpg</picture>
+      </offer>
+      <offer id="18" type="vendor.model">
+        <available>true</available>
+        <currencyId>UAH</currencyId>
+        <categoryId>4</categoryId>
+        <picture>18.jpg</picture>
+      </offer>
+      <offer id="19" type="vendor.model">
+        <available>true</available>
+        <currencyId>UAH</currencyId>
+        <categoryId>4</categoryId>
+        <picture>19.jpg</picture>
+      </offer>
+      <offer id="20" type="vendor.model">
+        <available>true</available>
+        <currencyId>UAH</currencyId>
+        <categoryId>4</categoryId>
+        <picture>20.jpg</picture>
+      </offer>
+      <offer id="21" type="vendor.model">
+        <available>true</available>
+        <currencyId>UAH</currencyId>
+        <categoryId>4</categoryId>
+        <picture>21.jpg</picture>
+      </offer>
+      <offer id="22" type="vendor.model">
+        <available>true</available>
+        <currencyId>UAH</currencyId>
+        <categoryId>4</categoryId>
+        <picture>22.jpg</picture>
+      </offer>
+      <offer id="24" type="vendor.model">
+        <available>true</available>
+        <currencyId>UAH</currencyId>
+        <categoryId>5</categoryId>
+        <picture>24.jpg</picture>
+      </offer>
+      <offer id="25" type="vendor.model">
+        <available>true</available>
+        <currencyId>UAH</currencyId>
+        <categoryId>5</categoryId>
+        <picture>25.jpg</picture>
+      </offer>
+      <offer id="23" type="vendor.model">
+        <available>true</available>
+        <currencyId>UAH</currencyId>
+        <categoryId>5</categoryId>
+        <picture>23.jpg</picture>
+      </offer>
+      <offer id="26" type="vendor.model">
+        <available>true</available>
+        <currencyId>UAH</currencyId>
+        <categoryId>6</categoryId>
+        <picture>26.jpg</picture>
+      </offer>
+    </offers>
+  </shop>
+</yml_catalog>
