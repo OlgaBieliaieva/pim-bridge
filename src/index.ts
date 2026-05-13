@@ -1,11 +1,97 @@
+require("dotenv").config();
 import express from "express"
 import { parseXML } from "./parsers/torgsoft.parser"
 // import { syncProduct } from "./integrations/woocommerce"
 import { processProduct } from "./core/pipeline"
+import { fetchWooProducts } from "./integrations/woocommerce/fetch-products"
+import { processWooRun } from "./core/pipeline/process-woo-run"
 // import {findProductBySKU} from "./integrations/woocommerce"
 
 const app = express()
 const FILE_PATH = "C:/Users/Admin/my/projects/pim-bridge/feed/TSGoods.yml";
+
+
+// ======================
+// 📥 FETCH RAW PRODUCTS
+// ======================
+
+app.get(
+  "/prydane/products/fetch",
+
+  async (req, res) => {
+
+    try {
+
+      const start =
+        Number(req.query.start) || 1
+
+      const end =
+        Number(req.query.end) || start
+
+      const result =
+        await fetchWooProducts(
+          start,
+          end
+        )
+
+      res.json({
+        success: true,
+
+        ...result
+      })
+
+    } catch (error: any) {
+
+      console.error(error)
+
+      res.status(500).json({
+        success: false,
+        error: error.message
+      })
+    }
+  }
+)
+
+// ======================
+// ⚙️ PROCESS RAW RUN
+// ======================
+
+app.get(
+  "/prydane/products/process",
+
+  async (req, res) => {
+
+    try {
+
+      const runId =
+        String(req.query.runId)
+
+      if (!runId) {
+        return res
+          .status(400)
+          .json({
+            error: "runId required"
+          })
+      }
+
+      await processWooRun(runId)
+
+      res.json({
+        success: true,
+        runId
+      })
+
+    } catch (error: any) {
+
+      console.error(error)
+
+      res.status(500).json({
+        success: false,
+        error: error.message
+      })
+    }
+  }
+)
 
 app.get("/run", async (req, res) => {
   const products = await parseXML(FILE_PATH)
@@ -16,6 +102,70 @@ app.get("/run", async (req, res) => {
 
   res.send("Sync done")
 })
+
+// app.get("/prydane/products", async (req, res) => {
+//   try {
+//     const perPage = 100;
+
+//     const start = Number(req.query.start) || 1;
+//     const end = Number(req.query.end) || start;
+
+//     const dir = "./data/prydane/products";
+//     await fs.mkdir(dir, { recursive: true });
+
+//     let totalSaved = 0;
+
+//     for (let page = start; page <= end; page++) {
+//       console.log(`Fetching page ${page}...`);
+
+//       const response = await axios.get(API, {
+//         params: {
+//           consumer_key: process.env.PRYDANE_CONSUMER_KEY,
+//           consumer_secret: process.env.PRYDANE_CONSUMER_SECRET,
+//           per_page: perPage,
+//           page,
+//         },
+//       });
+
+//       const products = response.data;
+
+//       if (!products.length) {
+//         console.log(`Page ${page} is empty, stopping`);
+//         break;
+//       }
+
+//       const filename = path.join(
+//         dir,
+//         `products_p_${page}.json`
+//       );
+
+//       await fs.writeFile(
+//         filename,
+//         JSON.stringify(products, null, 2),
+//         "utf-8"
+//       );
+
+//       totalSaved += products.length;
+
+//       console.log(`Saved page ${page}`);
+
+//       // маленька пауза щоб не навантажувати сервер
+//       await new Promise((r) => setTimeout(r, 300));
+//     }
+
+//     res.json({
+//       message: "Done",
+//       pages: `${start}-${end}`,
+//       total: totalSaved,
+//     });
+
+//   } catch (error) {
+//     const err = error as Error;
+//     console.error(err.message);
+
+//     res.status(500).json({ error: "Failed to fetch products" });
+//   }
+// });
 
 // app.post("/torgsoft-sync", async (req, res) => {
 //   const products = await parseXML("path")
