@@ -1,14 +1,103 @@
-import { COUNTRIES } from "../../dictionaries/countries"
-
-import { MATERIALS } from "../../dictionaries/materials"
-
-import {COLORS} from "../../dictionaries/colors"
-
-import { BRANDS } from "../../dictionaries/brands"
-
+import { SORTED_COUNTRIES, SORTED_MATERIALS, SORTED_COLORS, SORTED_BRANDS} from "../../dictionaries/sorted-dictionaries"
+import { BRAND_COUNTRIES } from "../../dictionaries/brand-countries"
 import { findInDictionary } from "./find-in-dictionary"
-
 import { capitalize } from "../../utils/text"
+
+
+// ======================
+// 🏷️ TYPES
+// ======================
+
+export type ExtractedBrand = {
+
+  brand: string | null
+
+  confidence:
+    | "high"
+    | "low"
+}
+
+// ======================
+// 🔐 ESCAPE REGEX
+// ======================
+
+function escapeRegex(
+  value: string
+): string {
+
+  return value.replace(
+    /[.*+?^${}()|[\]\\]/g,
+    "\\$&"
+  )
+}
+
+// ======================
+// 🧹 REMOVE VALUE
+// ======================
+
+function removeValue(
+  text: string,
+  value: string
+): string {
+
+  const escaped =
+    escapeRegex(value)
+
+  return text.replace(
+    new RegExp(
+      `(^|\\s|[()\\[\\],.-])${escaped}(?=$|\\s|[()\\[\\],.-])`,
+      "igu"
+    ),
+    " "
+  )
+}
+
+// ======================
+// 🪓 TOKENIZE
+// ======================
+
+function tokenize(
+  text: string
+): string[] {
+
+  return (
+    text.match(
+      /[a-zа-яіїє0-9-]+/giu
+    ) || []
+  )
+}
+
+// ======================
+// 🚫 BANNED TOKENS
+// ======================
+
+const bannedWords =
+  new Set([
+
+    "чорний",
+    "бiлий",
+    "білий",
+    "червоний",
+    "синій",
+    "зелений",
+    "жовтий",
+    "сірий",
+    "малий",
+    "великий",
+    "круглий",
+    "квадратний",
+
+    "сковорода",
+    "каструля",
+    "миска",
+    "тарілка",
+    "чашка",
+    "кухоль",
+    "набір",
+    "кришка",
+    "контейнер",
+    "термос"
+  ])
 
 // ======================
 // 🧹 CLEAN TEXT
@@ -38,7 +127,7 @@ export function extractCountry(
 
   return findInDictionary(
     text,
-    COUNTRIES
+    SORTED_COUNTRIES
   )
 }
 
@@ -52,7 +141,7 @@ export function extractMaterial(
 
   return findInDictionary(
     text,
-    MATERIALS
+    SORTED_MATERIALS
   )
 }
 
@@ -66,7 +155,7 @@ export function extractColor(
 
   return findInDictionary(
     text,
-    COLORS
+    SORTED_COLORS
   )
 }
 
@@ -317,11 +406,115 @@ export function extractBarcode(
 // 🏭 BRAND
 // ======================
 
+// export function extractBrand(
+//   title: string,
+//   country: string | null,
+//   model: string | null
+// ): string | null {
+
+//   // ======================
+//   // 📚 DICTIONARY FIRST
+//   // ======================
+
+//   const dictionaryBrand =
+//     findInDictionary(
+//       title,
+//       SORTED_BRANDS
+//     )
+
+//   if (dictionaryBrand) {
+//     return dictionaryBrand
+//   }
+
+
+
+//   // ======================
+//   // 🧹 CLEAN
+//   // ======================
+
+//   let cleaned = title
+
+//   if (country) {
+
+//     cleaned = cleaned.replace(
+//       new RegExp(country, "ig"),
+//       ""
+//     )
+//   }
+
+//   if (model) {
+
+//     cleaned = cleaned.replace(
+//       new RegExp(
+//         model.replace(
+//           /[.*+?^${}()|[\]\\]/g,
+//           "\\$&"
+//         ),
+//         "ig"
+//       ),
+//       ""
+//     )
+//   }
+
+//   const words =
+//     cleaned.split(" ")
+
+//   // ======================
+//   // 🔠 ALL CAPS
+//   // ======================
+
+//   const upper =
+//     words.find(
+//       (w) =>
+//         /^[A-Z]{3,}$/.test(w)
+//     )
+
+//   if (upper) {
+//     return capitalize(
+//       upper.toLowerCase()
+//     )
+//   }
+
+//   // ======================
+//   // 🔤 LAST WORD
+//   // ======================
+
+//   const last =
+//     words[words.length - 1]
+
+//   if (
+//     last &&
+//     last.length > 2 &&
+//     !/\d/.test(last)
+//   ) {
+
+//     return capitalize(last)
+//   }
+
+//   return null
+// }
+
 export function extractBrand(
   title: string,
-  country: string | null,
-  model: string | null
-): string | null {
+  params?: {
+
+    country?: string | null
+
+    material?: string | null
+
+    color?: string | null
+
+    weight?: number | null
+
+    volume?: number | null
+
+    dimensions?: any
+
+    diameter?: number | null
+
+    height?: number | null
+  }
+): ExtractedBrand {
 
   // ======================
   // 📚 DICTIONARY FIRST
@@ -330,11 +523,19 @@ export function extractBrand(
   const dictionaryBrand =
     findInDictionary(
       title,
-      BRANDS
+      SORTED_BRANDS
     )
 
   if (dictionaryBrand) {
-    return dictionaryBrand
+
+    return {
+
+      brand:
+        dictionaryBrand,
+
+      confidence:
+        "high"
+    }
   }
 
   // ======================
@@ -343,64 +544,235 @@ export function extractBrand(
 
   let cleaned = title
 
-  if (country) {
+  // ======================
+  // 🌍 COUNTRY
+  // ======================
 
-    cleaned = cleaned.replace(
-      new RegExp(country, "ig"),
-      ""
+  if (params?.country) {
+
+    cleaned = removeValue(
+      cleaned,
+      params.country
     )
   }
 
-  if (model) {
+  // ======================
+  // 🧱 MATERIAL
+  // ======================
 
-    cleaned = cleaned.replace(
-      new RegExp(
-        model.replace(
-          /[.*+?^${}()|[\]\\]/g,
-          "\\$&"
-        ),
-        "ig"
-      ),
-      ""
+  if (params?.material) {
+
+    cleaned = removeValue(
+      cleaned,
+      params.material
     )
   }
 
-  const words =
-    cleaned.split(" ")
+  // ======================
+  // 🎨 COLOR
+  // ======================
+
+  if (params?.color) {
+
+    cleaned = removeValue(
+      cleaned,
+      params.color
+    )
+  }
+
+  // ======================
+  // ⚖️ WEIGHT
+  // ======================
+
+  cleaned = cleaned.replace(
+    /(\d+(?:[.,]\d+)?)\s?(г|гр|кг)(?![а-яіїєa-z])/giu,
+    " "
+  )
+
+  // ======================
+  // 🧴 VOLUME
+  // ======================
+
+  cleaned = cleaned.replace(
+    /(\d+(?:[.,]\d+)?)\s?(мл|л)(?![а-яіїєa-z])/giu,
+    " "
+  )
+
+  // ======================
+  // 📏 DIMENSIONS
+  // ======================
+
+  cleaned = cleaned.replace(
+    /\(?\s?\d+(?:[.,]\d+)?\s?[xх*]\s?\d+(?:[.,]\d+)?(?:\s?[xх*]\s?\d+(?:[.,]\d+)?)?\s?(см|мм|mm)?\s?\)?/giu,
+    " "
+  )
+
+  // ======================
+  // ⭕ DIAMETER
+  // ======================
+
+  cleaned = cleaned.replace(
+    /(д\.|d|ø|діаметр)\s?\d+(?:[.,]\d+)?\s?мм/giu,
+    " "
+  )
+
+  // ======================
+  // 📐 HEIGHT
+  // ======================
+
+  cleaned = cleaned.replace(
+    /(h[-\s]?|висота)\s?\d+(?:[.,]\d+)?\s?мм/giu,
+    " "
+  )
+
+  // ======================
+  // 🧹 NORMALIZE SPACES
+  // ======================
+
+  cleaned = cleaned
+    .replace(/\s+/g, " ")
+    .trim()
+
+  // ======================
+  // 🪓 TOKENS
+  // ======================
+
+  const tokens =
+    tokenize(cleaned)
+
+  if (!tokens.length) {
+
+    return {
+
+      brand: null,
+
+      confidence:
+        "low"
+    }
+  }
 
   // ======================
   // 🔠 ALL CAPS
   // ======================
 
   const upper =
-    words.find(
+    tokens.find(
       (w) =>
-        /^[A-Z]{3,}$/.test(w)
+        /^[A-Z]{3,}$/u.test(w)
     )
 
   if (upper) {
-    return capitalize(
-      upper.toLowerCase()
-    )
+
+    return {
+
+      brand: upper,
+
+      confidence:
+        "low"
+    }
   }
 
   // ======================
-  // 🔤 LAST WORD
+  // 🔤 FIRST LATIN WORD
+  // ======================
+
+  const latinWord =
+    tokens.find(
+      (w) =>
+        /^[a-z][a-z0-9-]{2,}$/iu.test(w)
+    )
+
+  if (
+    latinWord &&
+    !bannedWords.has(
+      latinWord.toLowerCase()
+    )
+  ) {
+
+    return {
+
+      brand: capitalize(
+        latinWord.toLowerCase()
+      ),
+
+      confidence:
+        "low"
+    }
+  }
+
+  // ======================
+  // 🔤 SAFE LAST WORD
   // ======================
 
   const last =
-    words[words.length - 1]
+    tokens[tokens.length - 1]
 
   if (
     last &&
     last.length > 2 &&
-    !/\d/.test(last)
+    !/\d/.test(last) &&
+    !bannedWords.has(
+      last.toLowerCase()
+    )
   ) {
 
-    return capitalize(last)
+    return {
+
+      brand: capitalize(
+        last.toLowerCase()
+      ),
+
+      confidence:
+        "low"
+    }
   }
 
-  return null
+  return {
+
+    brand: null,
+
+    confidence:
+      "low"
+  }
+}
+
+// ======================
+// 🧹 NORMALIZE
+// ======================
+
+function normalize(
+  value: string
+): string {
+
+  return value
+    .toLowerCase()
+    .replace(/[’']/g, "")
+    .trim()
+}
+
+// ======================
+// 🌍 INFER COUNTRY
+// ======================
+
+export function inferCountryFromBrand(
+  brand: string | null
+): string | null {
+
+  if (!brand) {
+    return null
+  }
+
+  const normalizedBrand =
+    normalize(brand)
+
+  const found =
+    BRAND_COUNTRIES.find(
+      (b) =>
+        normalize(b.brand) ===
+        normalizedBrand
+    )
+
+  return found?.country || null
 }
 
 // ======================

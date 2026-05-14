@@ -42,7 +42,7 @@ export type ProductAttributes = {
 
   height?: number | null
 
-  barcode?: string | null
+  // barcode?: string | null
 
   color?: string | null
 
@@ -119,16 +119,16 @@ export type NormalizedProduct = {
   attributes: ProductAttributes
 
   // 💰 Commerce
-  price?: number
+  // price?: number
 
-  stock?: number
+  // stock?: number
 
-  isAvailable?: boolean
+  // isAvailable?: boolean
 
-  currency?: string
+  // currency?: string
 
   // 🖼️ Media
-  images?: string[]
+  // images?: string[]
 
   // 📊 Confidence
   confidence: ConfidenceReport
@@ -139,7 +139,5 @@ export type NormalizedProduct = {
   // 🕓 Timestamps
   timestamps: ProductTimestamps
 
-  diameter?: number | null
-
-  height?: number | null
+  
 }

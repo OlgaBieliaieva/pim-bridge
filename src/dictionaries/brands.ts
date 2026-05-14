@@ -85,12 +85,12 @@ export const BRANDS = [
   },
 
   {
-    canonical: "Мрійниця",
+    canonical: "TEP",
 
     aliases: [
-      "мрійниця",
-      "МРІЙНИЦЯ",
-        "mriynitsya",
+      "tep",
+      "TEP",
+        "ТЕП",
     ]
   },
 
@@ -140,5 +140,117 @@ export const BRANDS = [
       "нілтекс"
     ]
   },
-]
-      
+
+  {
+    canonical: "YEROcolors",
+
+    aliases: [
+      "yerocolors",
+      "YEROCOLORS",
+      "йеро колорс"
+    ]
+  },
+
+  {
+    canonical: "Біла ніч",
+
+    aliases: [
+      "біла ніч",
+      "БІЛА НІЧ",
+      "белая ночь",
+      "bila nych"
+    ]
+  },
+
+  {
+    canonical: "Slado",
+
+    aliases: [
+      "slado",
+      "SLADO"
+  
+    ]
+  },
+
+  {
+    canonical: "OVEN",
+
+    aliases: [
+      "oven",
+      "OVEN",
+      "овен"
+    ]
+  },
+
+  {
+    canonical: "Кондекор",
+
+    aliases: [
+      "кондекор",
+      "КОНДЕКОР",
+      "kondekor"  
+    ]
+  },
+
+  {
+    canonical: "Smet",
+    aliases: [
+      "smet",
+      "SMET",
+      "Смет"
+    ]
+  },
+
+  {
+    canonical: "Egastronom",
+    aliases: [
+      "egastronom",
+      "EGASTRONOM",
+      "егастроном"
+    ]
+  },
+
+  {
+    canonical: "Emmi",
+    aliases: [
+      "emmi",
+      "EMMI",
+      "емми"
+    ]
+  },
+
+  {
+    canonical: "Veliche",
+    aliases: [
+      "veliche",
+      "VELICHE",
+      "веліче"
+    ]
+  },
+
+  {
+    canonical: "Barbara Decor",
+    aliases: [
+      "barbara decor",
+      "BARBARA DECOR",
+      "барбара декор"
+    ]
+  },
+
+  {
+    canonical: "СТО ПУДОВ",
+    aliases: [
+      "сто пудов",
+      "СТО ПУДОВ",
+      "sto pudov"
+    ]
+  },
+
+  {
+    canonical: "Вілюта",
+    aliases: [
+      "вілюта",
+      "ВІЛЮТА"
+      ]
+  },
+]    

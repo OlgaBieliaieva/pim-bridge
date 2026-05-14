@@ -137,4 +137,16 @@ export const MATERIALS = [
     ]
   },
 
+  {
+    canonical: "Фланель",
+
+    aliases: [
+      "фланель",
+      "фл",
+      "флан",
+      "flannel"
+    ]
+  },
+
 ]
+      

@@ -18,7 +18,7 @@ type ConfidenceInput = {
 
   volume?: number | null
 
-  barcode?: string | null
+  // barcode?: string | null
 
   dimensions?: {
     width?: number
@@ -205,14 +205,14 @@ if (data.height) {
   // 📦 BARCODE
   // ======================
 
-  if (data.barcode) {
+  // if (data.barcode) {
 
-    score += 0.1
+  //   score += 0.1
 
-    reasons.push(
-      "barcode_detected"
-    )
-  }
+  //   reasons.push(
+  //     "barcode_detected"
+  //   )
+  // }
 
   // ======================
   // 🧹 PENALTIES

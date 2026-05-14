@@ -1,52 +1,29 @@
 import {
-
   extractBarcode,
-
   extractBrand,
-
   extractColor,
-
   extractCountry,
-
   extractDiameter,
-
   extractDimensions,
-
   extractHeight,
-
   extractMaterial,
-
   extractModel,
-
   extractVolume,
-
   extractWeight,
-
   removeExtractedData,
-
-  cleanText
-
+  cleanText,
+  inferCountryFromBrand
 } from "./extractors"
 
-import { collectBrand }
-from "../../dictionaries/collect-brand"
+import { collectBrand } from "../../dictionaries/collect-brand"
 
-import {
+import { cleanQuotes, stripHtml } from "../../utils/text"
 
-  cleanQuotes,
+import { WooProduct } from "../../types/woocommerce.types"
 
-  stripHtml
+import { NormalizedProduct } from "../../types/normalized-product"
 
-} from "../../utils/text"
-
-import { WooProduct }
-from "../../types/woocommerce.types"
-
-import { NormalizedProduct }
-from "../../types/normalized-product"
-
-import { calculateConfidence }
-from "../confidence/calculate-confidence"
+import { calculateConfidence } from "../confidence/calculate-confidence"
 
 export async function normalizeWooProduct(
   product: WooProduct
@@ -98,7 +75,7 @@ export async function normalizeWooProduct(
   // 🌍 COUNTRY
   // ======================
 
-  const country =
+  let country =
     extractCountry(
       workingTitle
     )
@@ -147,34 +124,6 @@ export async function normalizeWooProduct(
         [color]
       )
   }
-
-  // ======================
-  // 🏷️ BRAND
-  // ======================
-
-  const brand =
-    extractBrand(
-      workingTitle,
-      country,
-      null
-    )
-
-  if (brand) {
-
-    workingTitle =
-      removeExtractedData(
-        workingTitle,
-        [brand]
-      )
-  }
-
-  await collectBrand(
-    brand,
-    {
-      title: cleanedTitle,
-      sku: product.sku
-    }
-  )
 
   // ======================
   // ⚖️ WEIGHT
@@ -267,6 +216,87 @@ export async function normalizeWooProduct(
   }
 
   // ======================
+  // 🏷️ BRAND
+  // ======================
+
+  const brandResult =
+  extractBrand(
+    workingTitle,
+    {
+      country,
+      material,
+      color,
+      weight,
+      volume,
+      dimensions,
+      diameter,
+      height
+    }
+  )
+
+let brand: string | null =
+  null
+
+// ======================
+// ✅ VERIFIED BRAND
+// ======================
+
+if (
+  brandResult.confidence ===
+  "high"
+) {
+
+  brand =
+    brandResult.brand
+
+  if (brand) {
+
+    workingTitle =
+      removeExtractedData(
+        workingTitle,
+        [brand]
+      )
+  }
+}
+
+// ======================
+// 🌍 INFER COUNTRY
+// ======================
+
+if (
+  !country &&
+  brand &&
+  brandResult.confidence ===
+    "high"
+) {
+
+  country =
+    inferCountryFromBrand(
+      brand
+    )
+}
+
+// ======================
+// 🟡 CANDIDATE BRAND
+// ======================
+
+if (
+  brandResult.brand &&
+  brandResult.confidence ===
+  "low"
+) {
+
+  await collectBrand(
+    brandResult.brand,
+    {
+      title: cleanedTitle,
+      sku: product.sku
+    }
+  )
+}
+
+
+  // ======================
   // 🔢 MODEL (LAST)
   // ======================
 
@@ -347,7 +377,7 @@ export async function normalizeWooProduct(
 
       height,
 
-      barcode
+      // barcode
     })
 
   // ======================
@@ -399,29 +429,29 @@ export async function normalizeWooProduct(
 
       height,
 
-      barcode
+      // barcode
     },
 
-    price:
-      Number(product.price),
+    // price:
+    //   Number(product.price),
 
-    stock:
-      product.stock_quantity || 0,
+    // stock:
+    //   product.stock_quantity || 0,
 
-    isAvailable:
-      product.stock_status ===
-      "instock",
+    // isAvailable:
+    //   product.stock_status ===
+    //   "instock",
 
-    images:
-      product.images.map(
-        (i) => i.src
-      ),
+    // images:
+    //   product.images.map(
+    //     (i) => i.src
+    //   ),
 
     confidence,
 
     normalization: {
 
-      version: "v3",
+      version: "v5",
 
       strategy:
         "deterministic"
