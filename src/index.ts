@@ -5,6 +5,8 @@ import { parseXML } from "./parsers/torgsoft.parser"
 import { processProduct } from "./core/pipeline"
 import { fetchWooProducts } from "./integrations/woocommerce/fetch-products"
 import { processWooRun } from "./core/pipeline/process-woo-run"
+import { testGemini } from "./integrations/ai/gemini.test"
+import { refineProductWithAi} from "./core/ai/refine-product-with-ai"
 // import {findProductBySKU} from "./integrations/woocommerce"
 
 const app = express()
@@ -92,6 +94,84 @@ app.get(
     }
   }
 )
+
+// ======================
+// ⚙️ AI TEST
+// ======================
+
+app.get(
+  "/ai/test",
+  async (_, res) => {
+
+    try {
+
+      const result =
+        await testGemini()
+
+      res.json({
+        success: true,
+        result
+      })
+
+    } catch (e) {
+
+      console.error(e)
+
+      res.status(500).json({
+        error: "AI test failed"
+      })
+    }
+  }
+)
+
+app.get(
+  "/ai/refine-test",
+  async (_, res) => {
+
+    try {
+
+      const result =
+        await refineProductWithAi({
+
+          rawTitle:
+            `"Сироп "" Гренадін "" 270мл MARIBELL ."`,
+          
+          normalizedTitle:
+            "Сироп Гренадін",
+
+          normalizedDescription:
+            "Гренадін 270мл",
+
+          categoryPath: [
+            "Сироп"
+          ],
+
+          attributes: {
+
+            brand:
+              "MARIBELL",
+
+            volume:
+              270
+          }
+        })
+
+      res.json(result)
+
+    } catch (e) {
+
+      console.error(e)
+
+      res.status(500).json({
+
+        error:
+          "AI refinement failed"
+      })
+    }
+  }
+)
+
+
 
 app.get("/run", async (req, res) => {
   const products = await parseXML(FILE_PATH)
