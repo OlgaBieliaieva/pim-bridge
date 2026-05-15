@@ -1,5 +1,4 @@
 import {
-  extractBarcode,
   extractBrand,
   extractColor,
   extractCountry,
@@ -75,17 +74,33 @@ export async function normalizeWooProduct(
   // 🌍 COUNTRY
   // ======================
 
-  let country =
+  const detectedCountry =
     extractCountry(
       workingTitle
     )
 
-  if (country) {
+  let country =
+    detectedCountry
+      ? {
+          value:
+            detectedCountry,
+
+          source:
+            "dictionary" as const,
+
+          confidence: 1,
+
+          requiresReview:
+            false
+        }
+      : undefined
+
+  if (country?.value) {
 
     workingTitle =
       removeExtractedData(
         workingTitle,
-        [country]
+        [country.value]
       )
   }
 
@@ -93,17 +108,33 @@ export async function normalizeWooProduct(
   // 🧱 MATERIAL
   // ======================
 
-  const material =
+  const detectedMaterial =
     extractMaterial(
       workingTitle
     )
 
-  if (material) {
+  const material =
+    detectedMaterial
+      ? {
+          value:
+            detectedMaterial,
+
+          source:
+            "dictionary" as const,
+
+          confidence: 1,
+
+          requiresReview:
+            false
+        }
+      : undefined
+
+  if (material?.value) {
 
     workingTitle =
       removeExtractedData(
         workingTitle,
-        [material]
+        [material.value]
       )
   }
 
@@ -111,17 +142,33 @@ export async function normalizeWooProduct(
   // 🎨 COLOR
   // ======================
 
-  const color =
+  const detectedColor =
     extractColor(
       workingTitle
     )
 
-  if (color) {
+  const color =
+    detectedColor
+      ? {
+          value:
+            detectedColor,
+
+          source:
+            "dictionary" as const,
+
+          confidence: 1,
+
+          requiresReview:
+            false
+        }
+      : undefined
+
+  if (color?.value) {
 
     workingTitle =
       removeExtractedData(
         workingTitle,
-        [color]
+        [color.value]
       )
   }
 
@@ -129,12 +176,28 @@ export async function normalizeWooProduct(
   // ⚖️ WEIGHT
   // ======================
 
-  const weight =
+  const detectedWeight =
     extractWeight(
       workingTitle
     )
 
-  if (weight) {
+  const weight =
+    detectedWeight
+      ? {
+          value:
+            detectedWeight,
+
+          source:
+            "regex" as const,
+
+          confidence: 0.9,
+
+          requiresReview:
+            false
+        }
+      : undefined
+
+  if (weight?.value) {
 
     workingTitle =
       workingTitle.replace(
@@ -147,12 +210,28 @@ export async function normalizeWooProduct(
   // 🧴 VOLUME
   // ======================
 
-  const volume =
+  const detectedVolume =
     extractVolume(
       workingTitle
     )
 
-  if (volume) {
+  const volume =
+    detectedVolume
+      ? {
+          value:
+            detectedVolume,
+
+          source:
+            "regex" as const,
+
+          confidence: 0.9,
+
+          requiresReview:
+            false
+        }
+      : undefined
+
+  if (volume?.value) {
 
     workingTitle =
       workingTitle.replace(
@@ -165,12 +244,29 @@ export async function normalizeWooProduct(
   // 📏 DIMENSIONS
   // ======================
 
-  const dimensions =
+  const detectedDimensions =
     extractDimensions(
       workingTitle
     )
 
-  if (dimensions) {
+  const dimensions =
+    detectedDimensions
+      ? {
+          value:
+            detectedDimensions,
+
+          source:
+            "regex" as const,
+
+          confidence:
+            0.85,
+
+          requiresReview:
+            false
+        }
+      : undefined
+
+  if (dimensions?.value) {
 
     workingTitle =
       workingTitle.replace(
@@ -183,12 +279,28 @@ export async function normalizeWooProduct(
   // ⭕ DIAMETER
   // ======================
 
-  const diameter =
+  const detectedDiameter =
     extractDiameter(
       workingTitle
     )
 
-  if (diameter) {
+  const diameter =
+    detectedDiameter
+      ? {
+          value:
+            detectedDiameter,
+
+          source:
+            "regex" as const,
+
+          confidence: 0.9,
+
+          requiresReview:
+            false
+        }
+      : undefined
+
+  if (diameter?.value) {
 
     workingTitle =
       workingTitle.replace(
@@ -201,12 +313,28 @@ export async function normalizeWooProduct(
   // 📐 HEIGHT
   // ======================
 
-  const height =
+  const detectedHeight =
     extractHeight(
       workingTitle
     )
 
-  if (height) {
+  const height =
+    detectedHeight
+      ? {
+          value:
+            detectedHeight,
+
+          source:
+            "regex" as const,
+
+          confidence: 0.9,
+
+          requiresReview:
+            false
+        }
+      : undefined
+
+  if (height?.value) {
 
     workingTitle =
       workingTitle.replace(
@@ -220,108 +348,187 @@ export async function normalizeWooProduct(
   // ======================
 
   const brandResult =
-  extractBrand(
-    workingTitle,
-    {
-      country,
-      material,
-      color,
-      weight,
-      volume,
-      dimensions,
-      diameter,
-      height
+    extractBrand(
+      workingTitle,
+      {
+        country:
+          country?.value,
+
+        material:
+          material?.value,
+
+        color:
+          color?.value,
+
+        weight: weight?.value,
+
+        volume: volume?.value,
+
+        dimensions,
+
+        diameter: diameter?.value,
+
+        height: height?.value
+      }
+    )
+
+  let brand:
+    | {
+        value: string
+
+        source:
+          | "dictionary"
+          | "regex"
+
+        confidence: number
+
+        requiresReview: boolean
+      }
+    | undefined
+
+  // ======================
+  // ✅ VERIFIED BRAND
+  // ======================
+
+  if (
+    brandResult.confidence ===
+    "high"
+  ) {
+
+    brand = {
+
+      value:
+        brandResult.brand!,
+
+      source:
+        "dictionary",
+
+      confidence: 1,
+
+      requiresReview:
+        false
     }
-  )
-
-let brand: string | null =
-  null
-
-// ======================
-// ✅ VERIFIED BRAND
-// ======================
-
-if (
-  brandResult.confidence ===
-  "high"
-) {
-
-  brand =
-    brandResult.brand
-
-  if (brand) {
 
     workingTitle =
       removeExtractedData(
         workingTitle,
-        [brand]
+        [brand.value]
       )
   }
-}
 
-// ======================
-// 🌍 INFER COUNTRY
-// ======================
+  // ======================
+  // 🟡 CANDIDATE BRAND
+  // ======================
 
-if (
-  !country &&
-  brand &&
-  brandResult.confidence ===
-    "high"
-) {
+  if (
+    brandResult.brand &&
+    brandResult.confidence ===
+      "low"
+  ) {
 
-  country =
-    inferCountryFromBrand(
-      brand
-    )
-}
+    brand = {
 
-// ======================
-// 🟡 CANDIDATE BRAND
-// ======================
+      value:
+        brandResult.brand,
 
-if (
-  brandResult.brand &&
-  brandResult.confidence ===
-  "low"
-) {
+      source:
+        "regex",
 
-  await collectBrand(
-    brandResult.brand,
-    {
-      title: cleanedTitle,
-      sku: product.sku
+      confidence: 0.4,
+
+      requiresReview:
+        true
     }
-  )
-}
+
+    await collectBrand(
+      brandResult.brand,
+      {
+        title:
+          cleanedTitle,
+
+        sku:
+          product.sku
+      }
+    )
+  }
+
+  // ======================
+  // 🌍 INFER COUNTRY
+  // ======================
+
+  if (
+    !country &&
+    brand &&
+    brand.source ===
+      "dictionary"
+  ) {
+
+    const inferredCountry =
+      inferCountryFromBrand(
+        brand.value
+      )
+
+    if (inferredCountry) {
+
+      country = {
+
+        value:
+          inferredCountry,
+
+        source:
+          "dictionary",
+
+        confidence: 0.95,
+
+        requiresReview:
+          false
+      }
+    }
+  }
 
 
   // ======================
   // 🔢 MODEL (LAST)
   // ======================
 
-  const model =
+  const detectedModel =
     extractModel(
       workingTitle
     )
 
-  if (model) {
+  const model =
+    detectedModel
+      ? {
+          value:
+            detectedModel,
+
+          source:
+            "regex" as const,
+
+          confidence: 0.35,
+
+          requiresReview:
+            true
+        }
+      : undefined
+
+  if (model?.value) {
 
     workingTitle =
       removeExtractedData(
         workingTitle,
-        [model]
+        [model.value]
       )
   }
 
-  // ======================
-  // 📦 BARCODE
-  // ======================
+  // // ======================
+  // // 📦 BARCODE
+  // // ======================
 
-  const barcode =
-    extractBarcode(
-      product.attributes
-    )
+  // const barcode =
+  //   extractBarcode(
+  //     product.attributes
+  //   )
 
   // ======================
   // ✨ FINAL TITLE
@@ -340,8 +547,8 @@ if (
     removeExtractedData(
       cleanedDescription,
       [
-        brand,
-        country
+        brand?.value || null,
+        country?.value || null
       ]
     )
 
@@ -349,36 +556,48 @@ if (
   // 📊 CONFIDENCE
   // ======================
 
-  const confidence =
-    calculateConfidence({
+  // ======================
+// 📊 CONFIDENCE
+// ======================
 
-      title:
-        normalizedTitle,
+const confidence =
+  calculateConfidence({
 
-      categoryPath,
+    title:
+      normalizedTitle,
 
-      brand,
+    categoryPath,
 
-      country,
+    brand:
+      brand?.value,
 
-      material,
+    country:
+      country?.value,
 
-      color,
+    material:
+      material?.value,
 
-      model,
+    color:
+      color?.value,
 
-      weight,
+    model:
+      model?.value,
 
-      volume,
+    weight:
+      weight?.value,
 
-      dimensions,
+    volume:
+      volume?.value,
 
-      diameter,
+    dimensions:
+      dimensions?.value,
 
-      height,
+    diameter:
+      diameter?.value,
 
-      // barcode
-    })
+    height:
+      height?.value
+  })
 
   // ======================
   // ✅ RESULT

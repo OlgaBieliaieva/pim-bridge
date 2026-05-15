@@ -24,31 +24,53 @@ export type ProductDimensions = {
 // 🧩 ATTRIBUTES
 // ======================
 
+export type ProvenanceAttribute<T> = {
+
+  value: T
+
+  source:
+    | "dictionary"
+    | "regex"
+    | "ai"
+
+  confidence: number
+
+  requiresReview: boolean
+}
+
 export type ProductAttributes = {
 
-  brand?: string | null
+  brand?:
+    ProvenanceAttribute<string | null>
 
-  country?: string | null
+  country?:
+    ProvenanceAttribute<string | null>
 
-  model?: string | null
+  material?:
+    ProvenanceAttribute<string | null>
 
-  weight?: number | null
+  color?:
+    ProvenanceAttribute<string | null>
 
-  volume?: number | null
+  model?:
+    ProvenanceAttribute<string | null>
 
-  dimensions?: ProductDimensions | null
+  weight?:
+    ProvenanceAttribute<number | null>
 
-  diameter?: number | null
+  volume?:
+    ProvenanceAttribute<number | null>
 
-  height?: number | null
+  diameter?:
+    ProvenanceAttribute<number | null>
 
-  // barcode?: string | null
+  height?:
+    ProvenanceAttribute<number | null>
 
-  color?: string | null
-
-  material?: string | null
-
-  series?: string | null
+  dimensions?:
+    ProvenanceAttribute<
+      ProductDimensions | null
+    >
 }
 
 // ======================

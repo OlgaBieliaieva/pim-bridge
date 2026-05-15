@@ -1,3 +1,11 @@
+import {
+  ProductAttributes
+} from "../../types/normalized-product"
+
+// ======================
+// 📥 INPUT
+// ======================
+
 export type AiRefinementInput = {
 
   rawTitle: string
@@ -8,62 +16,89 @@ export type AiRefinementInput = {
 
   categoryPath: string[]
 
-  attributes: {
-
-    brand?: string | null
-
-    country?: string | null
-
-    material?: string | null
-
-    color?: string | null
-
-    model?: string | null
-
-    weight?: number | null
-
-    volume?: number | null
-
-    diameter?: number | null
-
-    height?: number | null
-  }
+  attributes:
+    ProductAttributes
 }
 
-export type AiRefinementResult = {
+// ======================
+// 🛠️ CORRECTION RESULT
+// ======================
+
+export type AiCorrectionResult = {
 
   title: string
+
+  categoryPath: string[]
+
+  attributes:
+    ProductAttributes
+
+  confidence: number
+
+  warnings?: string[]
+}
+
+// ======================
+// ✨ ENRICHMENT RESULT
+// ======================
+
+export type AiEnrichmentResult = {
 
   shortDescription?: string
 
   description?: string
 
-  categoryPath: string[]
-
-  attributes: {
-
-    brand?: string | null
-
-    country?: string | null
-
-    material?: string | null
-
-    color?: string | null
-
-    model?: string | null
-
-    weight?: number | null
-
-    volume?: number | null
-
-    diameter?: number | null
-
-    height?: number | null
-  }
-
   seoTitle?: string
 
   seoDescription?: string
 
-  confidence: number
+  keywords?: string[]
 }
+
+// export type AiRefinementResult = {
+
+//   title: string
+
+//   shortDescription?: string
+
+//   description?: string
+
+//   categoryPath: string[]
+
+//   attributes: {
+
+//     brand?: string | null
+
+//     country?: string | null
+
+//     material?: string | null
+
+//     color?: string | null
+
+//     model?: string | null
+
+//     weight?: number | null
+
+//     volume?: number | null
+
+//     diameter?: number | null
+
+//     height?: number | null
+
+//     dimensions?: {
+//       width?: number
+
+//       height?: number
+
+//       length?: number
+
+//       unit?: string | null
+//     } | null
+//   }
+
+//   seoTitle?: string
+
+//   seoDescription?: string
+
+//   confidence: number
+// }

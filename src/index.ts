@@ -7,6 +7,7 @@ import { fetchWooProducts } from "./integrations/woocommerce/fetch-products"
 import { processWooRun } from "./core/pipeline/process-woo-run"
 import { testGemini } from "./integrations/ai/gemini.test"
 import { refineProductWithAi} from "./core/ai/refine-product-with-ai"
+import { testOpenRouter } from "./integrations/ai/openrouter.test";
 // import {findProductBySKU} from "./integrations/woocommerce"
 
 const app = express()
@@ -100,7 +101,7 @@ app.get(
 // ======================
 
 app.get(
-  "/ai/test",
+  "/ai/gemini/test",
   async (_, res) => {
 
     try {
@@ -134,25 +135,30 @@ app.get(
         await refineProductWithAi({
 
           rawTitle:
-            `"Сироп "" Гренадін "" 270мл MARIBELL ."`,
+            `\"Стрічка органза з оксамитовою крапкою 4см-124 Grey 60676 .\"`,
           
           normalizedTitle:
-            "Сироп Гренадін",
+            "Стрічка з оксамитовою крапкою 4 Grey 60676",
 
           normalizedDescription:
-            "Гренадін 270мл",
+            "органза з оксамитовою крапкою 4см-124 Grey",
 
           categoryPath: [
-            "Сироп"
+            "Стрічка"
           ],
 
           attributes: {
 
-            brand:
-              "MARIBELL",
-
-            volume:
-              270
+            "brand": null,
+      "country": null,
+      "material": "Органза",
+      "color": "Сірий",
+      "model": "см-124",
+      "weight": null,
+      "volume": null,
+      "dimensions": null,
+      "diameter": null,
+      "height": null,
           }
         })
 
@@ -168,6 +174,33 @@ app.get(
           "AI refinement failed"
       })
     }
+  }
+)
+
+app.get(
+  "/ai/openrouter/test",
+  async (_, res) => {
+
+    try {
+
+      const result =
+        await testOpenRouter()
+
+      res.json({
+        success: true,
+        result
+      })
+
+    } catch (error: any) {
+
+  console.log(
+    JSON.stringify(
+      error.response?.data,
+      null,
+      2
+    )
+  )
+}
   }
 )
 
