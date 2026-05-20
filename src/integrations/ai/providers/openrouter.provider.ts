@@ -1,5 +1,18 @@
 import axios from "axios"
 
+// ======================
+// 🔐 ENV VALIDATION
+// ======================
+
+if (
+  !process.env.OPENROUTER_API_KEY
+) {
+
+  throw new Error(
+    "OPENROUTER_API_KEY missing"
+  )
+}
+
 const OPENROUTER_URL =
   "https://openrouter.ai/api/v1/chat/completions"
 
@@ -28,6 +41,7 @@ export async function askOpenRouter(
 
     {
       headers: {
+
         Authorization:
           `Bearer ${process.env.OPENROUTER_API_KEY}`,
 

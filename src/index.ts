@@ -4,15 +4,57 @@ import { parseXML } from "./parsers/torgsoft.parser"
 // import { syncProduct } from "./integrations/woocommerce"
 import { processProduct } from "./core/pipeline"
 import { fetchWooProducts } from "./integrations/woocommerce/fetch-products"
+import { fetchWooCategories } from "./integrations/woocommerce/fetch-categories"
 import { processWooRun } from "./core/pipeline/process-woo-run"
 import { testGemini } from "./integrations/ai/gemini.test"
-import { refineProductWithAi} from "./core/ai/refine-product-with-ai"
+// import { refineProductWithAi} from "./core/ai/refine-product-with-ai"
 import { testOpenRouter } from "./integrations/ai/openrouter.test";
 // import {findProductBySKU} from "./integrations/woocommerce"
 
 const app = express()
 const FILE_PATH = "C:/Users/Admin/my/projects/pim-bridge/feed/TSGoods.yml";
 
+
+// ======================
+// 📥 FETCH CATEGORIES
+// ======================
+
+app.get(
+  "/prydane/categories/fetch",
+
+  async (req, res) => {
+
+    try {
+
+      const start =
+        Number(req.query.start) || 1
+
+      const end =
+        Number(req.query.end) || start
+
+      const result =
+        await fetchWooCategories(
+          start,
+          end
+        )
+
+      res.json({
+        success: true,
+
+        ...result
+      })
+
+    } catch (error: any) {
+
+      console.error(error)
+
+      res.status(500).json({
+        success: false,
+        error: error.message
+      })
+    }
+  }
+)
 
 // ======================
 // 📥 FETCH RAW PRODUCTS
@@ -131,38 +173,38 @@ app.get(
 
     try {
 
-      const result =
-        await refineProductWithAi({
+      // const result =
+      //   await refineProductWithAi({
 
-          rawTitle:
-            `\"Стрічка органза з оксамитовою крапкою 4см-124 Grey 60676 .\"`,
+      //     rawTitle:
+      //       `\"Стрічка органза з оксамитовою крапкою 4см-124 Grey 60676 .\"`,
           
-          normalizedTitle:
-            "Стрічка з оксамитовою крапкою 4 Grey 60676",
+      //     normalizedTitle:
+      //       "Стрічка з оксамитовою крапкою 4 Grey 60676",
 
-          normalizedDescription:
-            "органза з оксамитовою крапкою 4см-124 Grey",
+      //     normalizedDescription:
+      //       "органза з оксамитовою крапкою 4см-124 Grey",
 
-          categoryPath: [
-            "Стрічка"
-          ],
+      //     categoryPath: [
+      //       "Стрічка"
+      //     ],
 
-          attributes: {
+      //     attributes: {
 
-            "brand": null,
-      "country": null,
-      "material": "Органза",
-      "color": "Сірий",
-      "model": "см-124",
-      "weight": null,
-      "volume": null,
-      "dimensions": null,
-      "diameter": null,
-      "height": null,
-          }
-        })
+      //       "brand": null,
+      // "country": null,
+      // "material": "Органза",
+      // "color": "Сірий",
+      // "model": "см-124",
+      // "weight": null,
+      // "volume": null,
+      // "dimensions": null,
+      // "diameter": null,
+      // "height": null,
+      //     }
+      //   })
 
-      res.json(result)
+      // res.json(result)
 
     } catch (e) {
 
